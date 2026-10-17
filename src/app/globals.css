@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-komfy-bg text-komfy-ink antialiased;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+::selection {
+  background: #eae3d6;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3 {
+    @apply font-serif;
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  .container-komfy {
+    @apply mx-auto w-full max-w-container px-5 sm:px-8 lg:px-[60px];
+  }
+
+  /* Uppercase gold eyebrow label */
+  .eyebrow {
+    @apply font-sans text-[12px] font-normal uppercase tracking-[0.22em] text-komfy-gold;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-komfy-green px-7 py-4 text-[15px] font-medium text-komfy-surface transition-colors hover:bg-komfy-greenSoft focus:outline-none focus-visible:ring-2 focus-visible:ring-komfy-gold focus-visible:ring-offset-2;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-komfy-border bg-transparent px-7 py-4 text-[15px] font-medium text-komfy-green transition-colors hover:bg-komfy-card focus:outline-none focus-visible:ring-2 focus-visible:ring-komfy-gold focus-visible:ring-offset-2;
+  }
+
+  .btn-light {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-komfy-surface px-7 py-4 text-[15px] font-medium text-komfy-green transition-colors hover:brightness-[0.98];
+  }
+
+  /* Editorial "Ətraflı" text link with underline */
+  .link-more {
+    @apply inline-flex items-center gap-1 border-b border-komfy-border pb-0.5 font-sans text-[13px] font-medium text-komfy-green transition-colors hover:border-komfy-green;
+  }
+
+  .card {
+    @apply border border-komfy-line bg-komfy-card;
+  }
+
+  .section {
+    @apply py-[72px] lg:py-[80px];
+  }
+
+  .hairline {
+    @apply border-komfy-line;
+  }
+}

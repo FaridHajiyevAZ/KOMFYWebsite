@@ -1,0 +1,16 @@
+node_modules
+.next
+out
+.env*.local
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+.env*
+
+# Prisma local db
+prisma/dev.db
+prisma/dev.db-journal
+
+# Yüklənmiş form faylları
+uploads/
