@@ -122,7 +122,7 @@ export default async function HomePage({
         <SlotOrImage
           src={home.made.image}
           alt={home.made.title}
-          label="Spring-unit line or foam-cutting close-up"
+          label={home.made.title}
           className="h-[520px] w-full"
           rounded="rounded-3xl"
         />
@@ -205,7 +205,7 @@ export default async function HomePage({
             </h2>
           </div>
           <Link href="/industries" className="text-[14.5px] font-bold text-b2b-ink">
-            All industries →
+            {dict.common.allIndustries} →
           </Link>
         </div>
         <div className="grid gap-5 [grid-template-columns:repeat(auto-fill,minmax(340px,1fr))]">
