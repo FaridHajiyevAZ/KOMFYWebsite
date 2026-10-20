@@ -12,5 +12,5 @@ next-env.d.ts
 prisma/dev.db
 prisma/dev.db-journal
 
-# Yüklənmiş form faylları
-uploads/
+# Yüklənmiş form faylları (kök) — gizli; public/uploads (sayt şəkilləri) git-dədir
+/uploads/

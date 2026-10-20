@@ -1,0 +1,22 @@
+# Render Blueprint — KOMFY sayt.
+# Qeyd: xidmət artıq əllə yaradılıbsa, bu fayl avtomatik tətbiq olunmur —
+# aşağıdakı parametrləri Render dashboard-da əllə qurun (README-yə bax).
+services:
+  - type: web
+    name: komfy-site
+    runtime: node
+    plan: starter # persistent disk üçün ən azı starter lazımdır (free-də disk yoxdur)
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      # SQLite faylı persistent diskdə — deploy-lar arası itmir, admin dəyişiklikləri qalır.
+      - key: DATABASE_URL
+        value: file:/var/data/komfy.db
+      - key: AUTH_SECRET
+        generateValue: true # Render uzun təsadüfi dəyər yaradır
+      - key: SITE_URL
+        sync: false # canlı domeninizi daxil edin (məs. https://komfy.onrender.com)
+    disk:
+      name: komfy-data
+      mountPath: /var/data
+      sizeGB: 1

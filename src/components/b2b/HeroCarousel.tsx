@@ -2,8 +2,10 @@
 
 import { LocaleLink as Link } from "@/components/LocaleLink";
 import { useEffect, useRef, useState } from "react";
-import { heroSlides as defaultSlides } from "@/data/b2b";
+import { defaultHomeContent } from "@/data/home";
 import type { HeroSlideC } from "@/data/home";
+
+const defaultSlides: HeroSlideC[] = defaultHomeContent.hero;
 
 const SLIDE_BG = [
   "radial-gradient(60% 60% at 80% 15%, rgba(163,121,100,.55), rgba(163,121,100,0) 70%), linear-gradient(135deg,#2b2620,#1a1712)",
@@ -41,7 +43,12 @@ export function HeroCarousel({ slides }: { slides?: HeroSlideC[] }) {
               zIndex: i === slide ? 1 : 0,
             }}
           >
-            <div className="absolute inset-0" style={{ background: SLIDE_BG[i % SLIDE_BG.length] }} />
+            {s.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={s.image} alt={s.title} className="absolute inset-0 h-full w-full object-cover" />
+            ) : (
+              <div className="absolute inset-0" style={{ background: SLIDE_BG[i % SLIDE_BG.length] }} />
+            )}
             <div
               className="pointer-events-none absolute inset-0"
               style={{

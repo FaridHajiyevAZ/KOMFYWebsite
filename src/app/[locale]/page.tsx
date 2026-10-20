@@ -2,7 +2,7 @@ import { LocaleLink as Link } from "@/components/LocaleLink";
 import Image from "next/image";
 import type { Metadata } from "next";
 import { HeroCarousel } from "@/components/b2b/HeroCarousel";
-import { ImageSlot } from "@/components/b2b/ImageSlot";
+import { SlotOrImage } from "@/components/b2b/SlotOrImage";
 import { getProducts, getHomeContent } from "@/lib/content";
 import { formatPrice } from "@/data/products";
 import { getDictionary } from "@/i18n/dictionaries";
@@ -92,7 +92,7 @@ export default async function HomePage({
               href={p.cta.href}
               className="group relative block h-[480px] overflow-hidden rounded-3xl text-white transition-transform duration-300 hover:-translate-y-1"
             >
-              <ImageSlot variant="photo" rounded="rounded-3xl" className="absolute inset-0 h-full w-full" />
+              <SlotOrImage src={p.image} alt={p.title} variant="photo" rounded="rounded-3xl" className="absolute inset-0 h-full w-full" />
               <div
                 className="pointer-events-none absolute inset-0"
                 style={{
@@ -119,7 +119,9 @@ export default async function HomePage({
 
       {/* How it's made */}
       <section className="mx-auto grid max-w-[1280px] items-center gap-14 px-8 pt-24 [grid-template-columns:repeat(auto-fit,minmax(340px,1fr))]">
-        <ImageSlot
+        <SlotOrImage
+          src={home.made.image}
+          alt={home.made.title}
           label="Spring-unit line or foam-cutting close-up"
           className="h-[520px] w-full"
           rounded="rounded-3xl"
@@ -148,18 +150,18 @@ export default async function HomePage({
             ))}
           </div>
           <Link
-            href="/manufacturing"
+            href={home.made.cta.href}
             className="inline-block rounded-[10px] bg-b2b-ink px-6 py-3.5 text-[15px] font-bold text-white transition hover:bg-[#3a342d]"
           >
-            See the full Manufacturing page
+            {home.made.cta.label}
           </Link>
         </div>
       </section>
 
       {/* Floor gallery */}
       <section className="mx-auto grid max-w-[1280px] gap-5 px-8 pt-6 [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
-        {["Production floor", "Machinery", "Materials", "QC / testing"].map((l) => (
-          <ImageSlot key={l} label={l} className="h-[240px] w-full" rounded="rounded-[20px]" />
+        {home.gallery.map((g, i) => (
+          <SlotOrImage key={i} src={g.image} alt={g.label} label={g.label} className="h-[240px] w-full" rounded="rounded-[20px]" />
         ))}
       </section>
 
@@ -174,22 +176,19 @@ export default async function HomePage({
               {home.quality.title}
             </h2>
             <Link
-              href="/quality"
+              href={home.quality.cta.href}
               className="inline-block rounded-[10px] border-[1.5px] border-b2b-ink px-[22px] py-3 text-[15px] font-bold text-b2b-ink transition hover:bg-b2b-ink hover:text-white"
             >
-              View Quality Standards
+              {home.quality.cta.label}
             </Link>
           </div>
           <div>
             <div className="grid grid-cols-3 gap-3.5">
-              {["Certificate", "Test report", "Certificate"].map((l, i) => (
-                <ImageSlot key={i} label={l} className="h-[200px] w-full min-w-0" rounded="rounded-xl" />
+              {home.certs.map((cert, i) => (
+                <SlotOrImage key={i} src={cert.image} alt={cert.label} label={cert.label} className="h-[200px] w-full min-w-0" rounded="rounded-xl" />
               ))}
             </div>
-            <p className="mt-3.5 text-[13px] italic text-b2b-muted">
-              Certificates &amp; test reports shown once uploaded — none implied without a document
-              on file.
-            </p>
+            <p className="mt-3.5 text-[13px] italic text-b2b-muted">{home.quality.note}</p>
           </div>
         </div>
       </section>
@@ -216,7 +215,7 @@ export default async function HomePage({
               href="/industries"
               className="group relative block h-[340px] overflow-hidden rounded-3xl text-white transition-transform duration-300 hover:-translate-y-1"
             >
-              <ImageSlot variant="photo" rounded="rounded-3xl" className="absolute inset-0 h-full w-full" />
+              <SlotOrImage src={ind.image} alt={ind.name} variant="photo" rounded="rounded-3xl" className="absolute inset-0 h-full w-full" />
               <div
                 className="pointer-events-none absolute inset-0"
                 style={{
@@ -311,7 +310,7 @@ export default async function HomePage({
       {/* CTA — rounded card */}
       <section className="mx-auto max-w-[1280px] px-8 py-24">
         <div className="relative flex min-h-[360px] items-center overflow-hidden rounded-[28px] bg-b2b-ink">
-          <ImageSlot variant="dark" rounded="rounded-none" className="absolute inset-0 h-full w-full" />
+          <SlotOrImage src={home.cta.image} alt={home.cta.title} variant="dark" rounded="rounded-none" className="absolute inset-0 h-full w-full" />
           <div className="pointer-events-none absolute inset-0 bg-[rgba(20,17,13,.6)]" />
           <div className="pointer-events-none relative flex w-full flex-wrap items-center justify-between gap-7 p-[clamp(32px,5vw,64px)] text-white">
             <h2 className="m-0 max-w-[580px] font-grotesk text-[clamp(28px,3.4vw,44px)] font-bold leading-[1.1] tracking-[-0.01em]">
@@ -319,16 +318,16 @@ export default async function HomePage({
             </h2>
             <div className="pointer-events-auto flex flex-wrap gap-3">
               <Link
-                href="/oem"
+                href={home.cta.primary.href}
                 className="rounded-[10px] bg-white px-6 py-3.5 text-[15px] font-bold text-b2b-ink transition hover:bg-b2b-band"
               >
-                Start an OEM Project
+                {home.cta.primary.label}
               </Link>
               <Link
-                href="/quote"
+                href={home.cta.secondary.href}
                 className="rounded-[10px] border-[1.5px] border-white/60 px-6 py-3.5 text-[15px] font-bold text-white transition hover:bg-white/10"
               >
-                Request a B2B Quote
+                {home.cta.secondary.label}
               </Link>
             </div>
           </div>

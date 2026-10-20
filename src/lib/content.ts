@@ -132,12 +132,26 @@ export async function getSettings(): Promise<SiteSettings> {
   return { ...siteDefaults, ...safeJson<Partial<SiteSettings>>(row.data, {}) };
 }
 
-// Ana səhifə blokları — hər dil üçün ayrı. Admin-dən redaktə olunur, yoxdursa defolt tərcümə.
-export async function getHomeContent(locale: Locale = "az"): Promise<HomeContent> {
-  const d = defaultHomeContentByLocale[locale] ?? defaultHomeContentByLocale.az;
-  const row = await prisma.setting.findUnique({ where: { id: HOME_SETTING_ID[locale] } });
-  if (!row) return d;
-  const p = safeJson<Partial<HomeContent>>(row.data, {});
+// Dildən asılı olmayan şəkil sahələrini mənbədən (AZ) hədəfə köçürür — hədəfdə yoxdursa.
+function backfillImages(target: HomeContent, src: HomeContent): HomeContent {
+  const pick = (a?: string, b?: string) => a || b || undefined;
+  return {
+    ...target,
+    hero: target.hero.map((h, i) => ({ ...h, image: pick(h.image, src.hero[i]?.image) })),
+    paths: target.paths.map((p, i) => ({ ...p, image: pick(p.image, src.paths[i]?.image) })),
+    made: { ...target.made, image: pick(target.made.image, src.made.image) },
+    gallery: target.gallery.map((g, i) => ({ ...g, image: pick(g.image, src.gallery[i]?.image) })),
+    certs: target.certs.map((g, i) => ({ ...g, image: pick(g.image, src.certs[i]?.image) })),
+    industries: target.industries.map((ind, i) => ({
+      ...ind,
+      image: pick(ind.image, src.industries[i]?.image),
+    })),
+    cta: { ...target.cta, image: pick(target.cta.image, src.cta.image) },
+  };
+}
+
+// DB sətrini defolt tərcümə ilə birləşdirir (bir dil üçün).
+function mergeHome(d: HomeContent, p: Partial<HomeContent>): HomeContent {
   return {
     hero: p.hero ?? d.hero,
     stats: p.stats ?? d.stats,
@@ -145,11 +159,29 @@ export async function getHomeContent(locale: Locale = "az"): Promise<HomeContent
     paths: p.paths ?? d.paths,
     made: { ...d.made, ...p.made },
     processSteps: p.processSteps ?? d.processSteps,
+    gallery: p.gallery ?? d.gallery,
     quality: { ...d.quality, ...p.quality },
+    certs: p.certs ?? d.certs,
     industriesHead: { ...d.industriesHead, ...p.industriesHead },
     industries: p.industries ?? d.industries,
     testimonial: { ...d.testimonial, ...p.testimonial },
     retail: { ...d.retail, ...p.retail },
     cta: { ...d.cta, ...p.cta },
   };
+}
+
+// Ana səhifə blokları — hər dil üçün ayrı mətn. Şəkillər AZ-də saxlanılır və bütün dillərə şamil olunur.
+export async function getHomeContent(locale: Locale = "az"): Promise<HomeContent> {
+  const d = defaultHomeContentByLocale[locale] ?? defaultHomeContentByLocale.az;
+  const row = await prisma.setting.findUnique({ where: { id: HOME_SETTING_ID[locale] } });
+  const content = mergeHome(d, row ? safeJson<Partial<HomeContent>>(row.data, {}) : {});
+
+  // Şəkilləri AZ sətrindən götür (dil-neytral). AZ üçün özü mənbədir.
+  if (locale === "az") return content;
+  const azRow = await prisma.setting.findUnique({ where: { id: HOME_SETTING_ID.az } });
+  const azContent = mergeHome(
+    defaultHomeContentByLocale.az,
+    azRow ? safeJson<Partial<HomeContent>>(azRow.data, {}) : {}
+  );
+  return backfillImages(content, azContent);
 }

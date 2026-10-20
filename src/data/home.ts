@@ -1,5 +1,6 @@
 // Ana səhifə bloklarının strukturu + 3 dildə defolt məzmun.
 // Admin "Səhifə blokları"ndan hər dil ayrıca redaktə olunur; DB-də Setting-də JSON kimi saxlanılır.
+// Şəkil sahələri (image?) dildən asılı deyil — yalnız AZ tabında yüklənir, digər dillər AZ-dən götürür.
 import type { Locale } from "@/i18n/config";
 
 export interface HeroSlideC {
@@ -9,6 +10,7 @@ export interface HeroSlideC {
   primary: { label: string; href: string };
   secondary: { label: string; href: string };
   imageLabel: string;
+  image?: string;
 }
 export interface PathC {
   eyebrow: string;
@@ -16,20 +18,32 @@ export interface PathC {
   text: string;
   cta: { label: string; href: string };
   imageLabel: string;
+  image?: string;
+}
+export interface GalleryItemC {
+  label: string;
+  image?: string;
 }
 export interface HomeContent {
   hero: HeroSlideC[];
   stats: { value: string; label: string }[];
   partner: { eyebrow: string; title: string };
   paths: PathC[];
-  made: { eyebrow: string; title: string; text: string };
+  made: { eyebrow: string; title: string; text: string; cta: { label: string; href: string }; image?: string };
   processSteps: string[];
-  quality: { eyebrow: string; title: string };
+  gallery: GalleryItemC[];
+  quality: { eyebrow: string; title: string; cta: { label: string; href: string }; note: string };
+  certs: GalleryItemC[];
   industriesHead: { eyebrow: string; title: string };
-  industries: { name: string; status: string }[];
+  industries: { name: string; status: string; image?: string }[];
   testimonial: { quote: string; attribution: string };
   retail: { eyebrow: string; title: string };
-  cta: { title: string };
+  cta: {
+    title: string;
+    primary: { label: string; href: string };
+    secondary: { label: string; href: string };
+    image?: string;
+  };
 }
 
 const az: HomeContent = {
@@ -93,13 +107,23 @@ const az: HomeContent = {
     eyebrow: "Necə hazırlanır",
     title: "Yaydan tikişə qədər öz istehsalımız",
     text: "Hər matras yay bloku istehsalı, köpük kəsimi və qatlanması, kapitonaj və tikiş, yığılma, yoxlama və qablaşdırmadan keçir — hamısı öz istehsal xəttimizdə.",
+    cta: { label: "Tam İstehsal səhifəsinə bax", href: "/manufacturing" },
   },
   processSteps: ["Spesifikasiya", "İşləmə", "Nümunə", "Test", "İstehsal", "Qablaşdırma", "Çatdırılma"],
+  gallery: [
+    { label: "İstehsal sahəsi" },
+    { label: "Avadanlıq" },
+    { label: "Materiallar" },
+    { label: "Keyfiyyət nəzarəti" },
+  ],
   quality: {
     eyebrow: "Keyfiyyət və uyğunluq",
     title:
       "Hər matras göndərilməzdən əvvəl xammal nəzarətindən, proses yoxlamalarından və son yoxlamadan keçir.",
+    cta: { label: "Keyfiyyət standartlarına bax", href: "/quality" },
+    note: "Sertifikatlar və test hesabatları yükləndikdən sonra göstərilir — sənəd olmadan heç bir iddia edilmir.",
   },
+  certs: [{ label: "Sertifikat" }, { label: "Test hesabatı" }, { label: "Sertifikat" }],
   industriesHead: { eyebrow: "Sənayelər", title: "Xidmət etdiyimiz sənayelər" },
   industries: [
     { name: "Matras brendləri və distribyutorlar", status: "İmkan mövcuddur" },
@@ -115,7 +139,11 @@ const az: HomeContent = {
     attribution: "Təsdiqlənmiş müştəri rəyi — təsdiq gözləyir",
   },
   retail: { eyebrow: "Eviniz üçün", title: "Pərakəndə kataloqa baxış" },
-  cta: { title: "Matras istehsalı üçün tərəfdaş axtarırsınız?" },
+  cta: {
+    title: "Matras istehsalı üçün tərəfdaş axtarırsınız?",
+    primary: { label: "OEM layihəsinə başla", href: "/oem" },
+    secondary: { label: "B2B təklif al", href: "/quote" },
+  },
 };
 
 const en: HomeContent = {
@@ -179,13 +207,23 @@ const en: HomeContent = {
     eyebrow: "How it's made",
     title: "Built in-house, from spring to stitch",
     text: "Every mattress moves through spring-unit manufacturing, foam cutting and layering, quilting and sewing, assembly, inspection and packaging — all on our own production floor.",
+    cta: { label: "See the full Manufacturing page", href: "/manufacturing" },
   },
   processSteps: ["Specification", "Development", "Sampling", "Testing", "Production", "Packaging", "Delivery"],
+  gallery: [
+    { label: "Production floor" },
+    { label: "Machinery" },
+    { label: "Materials" },
+    { label: "QC / testing" },
+  ],
   quality: {
     eyebrow: "Quality & compliance",
     title:
       "Every mattress passes raw-material control, in-process checks and final inspection before it ships.",
+    cta: { label: "View Quality Standards", href: "/quality" },
+    note: "Certificates & test reports shown once uploaded — none implied without a document on file.",
   },
+  certs: [{ label: "Certificate" }, { label: "Test report" }, { label: "Certificate" }],
   industriesHead: { eyebrow: "Industries", title: "Industries served" },
   industries: [
     { name: "Mattress Brands & Distributors", status: "Capability available" },
@@ -201,7 +239,11 @@ const en: HomeContent = {
     attribution: "Verified client quote — placeholder pending approval",
   },
   retail: { eyebrow: "For your home", title: "Retail catalog preview" },
-  cta: { title: "Looking for a mattress manufacturing partner?" },
+  cta: {
+    title: "Looking for a mattress manufacturing partner?",
+    primary: { label: "Start an OEM Project", href: "/oem" },
+    secondary: { label: "Request a B2B Quote", href: "/quote" },
+  },
 };
 
 const ru: HomeContent = {
@@ -265,13 +307,23 @@ const ru: HomeContent = {
     eyebrow: "Как это сделано",
     title: "Собственное производство — от пружины до строчки",
     text: "Каждый матрас проходит производство пружинного блока, раскрой и укладку пены, стёжку и пошив, сборку, контроль и упаковку — всё на нашем производстве.",
+    cta: { label: "Открыть страницу производства", href: "/manufacturing" },
   },
   processSteps: ["Спецификация", "Разработка", "Образец", "Тестирование", "Производство", "Упаковка", "Доставка"],
+  gallery: [
+    { label: "Производство" },
+    { label: "Оборудование" },
+    { label: "Материалы" },
+    { label: "Контроль качества" },
+  ],
   quality: {
     eyebrow: "Качество и соответствие",
     title:
       "Каждый матрас проходит контроль сырья, промежуточные проверки и финальную инспекцию перед отгрузкой.",
+    cta: { label: "Стандарты качества", href: "/quality" },
+    note: "Сертификаты и тест-отчёты показываются после загрузки — без документа ничего не подразумевается.",
   },
+  certs: [{ label: "Сертификат" }, { label: "Тест-отчёт" }, { label: "Сертификат" }],
   industriesHead: { eyebrow: "Отрасли", title: "Обслуживаемые отрасли" },
   industries: [
     { name: "Матрасные бренды и дистрибьюторы", status: "Возможность доступна" },
@@ -287,7 +339,11 @@ const ru: HomeContent = {
     attribution: "Проверенный отзыв клиента — ожидает подтверждения",
   },
   retail: { eyebrow: "Для вашего дома", title: "Обзор розничного каталога" },
-  cta: { title: "Ищете партнёра по производству матрасов?" },
+  cta: {
+    title: "Ищете партнёра по производству матрасов?",
+    primary: { label: "Начать OEM-проект", href: "/oem" },
+    secondary: { label: "B2B-предложение", href: "/quote" },
+  },
 };
 
 export const defaultHomeContentByLocale: Record<Locale, HomeContent> = { az, en, ru };
